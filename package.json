@@ -1,0 +1,19 @@
+{
+  "name": "terminal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/bundle.js",
+    "dev": "nodemon index.ts",
+    "build": "esbuild index.ts --bundle --minify --packages=external --outfile=dist/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.14.0",
+    "esbuild": "^0.17.9",
+    "typescript": "^4.9.5"
+  }
+}
