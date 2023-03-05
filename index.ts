@@ -2,6 +2,7 @@ import readline from "readline";
 import { exec } from "child_process";
 import path from "path";
 import os from "os";
+import "colors";
 import { fileCopy, fileList, fileMove, fileReader } from "./helpers/fileReader";
 const rl = readline.createInterface(process.stdin, process.stdout);
 let currentPath = __dirname;
@@ -16,7 +17,16 @@ const changeDir = (location: string) => {
 };
 
 const terminal = () => {
-  rl.question(currentPath + ">", (answer) => {
+  const startSymbol =
+    os.type() === "Linux"
+      ? (
+          os.userInfo({ encoding: "utf-8" }).username +
+          "@" +
+          os.hostname() +
+          ":-$"
+        ).green
+      : currentPath.grey + ">";
+  rl.question(startSymbol, (answer) => {
     const input = answer.split(" ");
     switch (input[0]) {
       case "cd":
