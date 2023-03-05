@@ -15,17 +15,18 @@ const changeDir = (location: string) => {
   }
   return currentPath;
 };
-
+const getStartSymbol = () => {
+  const path = currentPath === __dirname;
+  return os.type() === "Linux"
+    ? (os.userInfo({ encoding: "utf-8" }).username + "@" + os.hostname())
+        .green +
+        ":".white +
+        `${path ? "~" : currentPath}$ `.blue
+    : currentPath.grey + "> ";
+};
 const terminal = () => {
-  const startSymbol =
-    os.type() === "Linux"
-      ? (
-          os.userInfo({ encoding: "utf-8" }).username +
-          "@" +
-          os.hostname() +
-          `:${currentPath}-$ `
-        ).green
-      : currentPath.grey + ">";
+  const startSymbol = getStartSymbol();
+
   rl.question(startSymbol, (answer) => {
     const input = answer.split(" ");
     switch (input[0]) {
