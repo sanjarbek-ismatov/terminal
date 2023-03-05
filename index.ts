@@ -1,5 +1,5 @@
 import readline from "readline";
-import { exec } from "child_process";
+import { execSync } from "child_process";
 import path from "path";
 import os from "os";
 import "colors";
@@ -22,7 +22,7 @@ const getStartSymbol = () => {
         .green +
         ":".white +
         `${path ? "~" : currentPath}$ `.blue
-    : currentPath.grey + "> ";
+    : currentPath + "> ";
 };
 const terminal = () => {
   const startSymbol = getStartSymbol();
@@ -70,7 +70,12 @@ const terminal = () => {
         console.log("terminal has cleaned");
         break;
       default:
-        console.log("Invalid command");
+        try {
+          const commStatus = execSync(input[0]);
+          console.log(commStatus.toString("utf-8"));
+        } catch (ex: any) {
+          // console.log(new Error(ex).message);
+        }
     }
     if (answer !== "exit") terminal();
   });
