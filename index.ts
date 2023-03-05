@@ -23,7 +23,8 @@ const terminal = () => {
           os.userInfo({ encoding: "utf-8" }).username +
           "@" +
           os.hostname() +
-          ":-$"
+          currentPath +
+          ":-$ "
         ).green
       : currentPath.grey + ">";
   rl.question(startSymbol, (answer) => {
