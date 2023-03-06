@@ -15,9 +15,10 @@ const changeDir = (location: string) => {
   }
   return currentPath;
 };
+const defaultTerminal = process.argv[2];
 const getStartSymbol = () => {
   const path = currentPath === __dirname;
-  return os.type() === "Linux"
+  return defaultTerminal === "--linux" || os.type() === "Linux"
     ? (os.userInfo({ encoding: "utf-8" }).username + "@" + os.hostname())
         .green +
         ":".white +
