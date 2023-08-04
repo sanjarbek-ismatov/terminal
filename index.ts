@@ -3,37 +3,38 @@ import { execSync } from "child_process";
 import path from "path";
 import os from "os";
 import "colors";
-import { fileCopy, fileList, fileMove, fileReader } from "./helpers/fileReader";
+import {
+  createFolder,
+  fileCopy,
+  fileCreate,
+  fileList,
+  fileMove,
+  fileReader,
+  fileRemove,
+  folderRemove,
+} from "./helpers/fileReader";
+import PathManager from "./helpers/pathManager";
 const rl = readline.createInterface(process.stdin, process.stdout);
-let currentPath = __dirname;
-const changeDir = (location: string) => {
-  try {
-    process.chdir(location);
-    return process.cwd();
-  } catch (ex: any) {
-    console.log(new Error(ex).message);
-  }
-  return currentPath;
-};
+
 const defaultTerminal = process.argv[2];
+const pathManager = new PathManager();
 const getStartSymbol = () => {
-  const path = currentPath === __dirname;
+  const currentPath = pathManager.currentPath;
   return defaultTerminal === "--linux" || os.type() === "Linux"
     ? (os.userInfo({ encoding: "utf-8" }).username + "@" + os.hostname())
         .green +
         ":".white +
-        `${path ? "~" : currentPath}$ `.blue
+        `${" ~" + pathManager.pathToLinux(currentPath)} $ `.blue
     : currentPath + "> ";
 };
 const terminal = () => {
   const startSymbol = getStartSymbol();
-
   rl.question(startSymbol, (answer) => {
     const input = answer.split(" ");
     switch (input[0]) {
       case "cd":
         const ln = input;
-        currentPath = changeDir(ln[1]);
+        pathManager.changeDir(ln[1]);
         break;
       case "os":
         console.log(os.type());
@@ -42,27 +43,39 @@ const terminal = () => {
         console.log(input[1]);
         break;
       case "cat":
-        const read = fileReader(currentPath + "\\" + input[1]);
+        const read = fileReader(pathManager.currentPath + "\\" + input[1]);
         console.log(read);
         break;
+      case "touch":
+        console.log(fileCreate(pathManager.currentPath, input[1]));
+        break;
       case "ls":
-        const list = fileList(currentPath);
+        const list = fileList(pathManager.currentPath);
         console.table(list);
         break;
-      case "move":
+      case "mv":
         const moveStatus = fileMove(
-          path.resolve(currentPath, input[1]),
-          path.resolve(currentPath, input[2], input[1])
+          path.resolve(pathManager.currentPath, input[1]),
+          path.resolve(pathManager.currentPath, input[2], input[1])
         );
         console.log(moveStatus);
         break;
-      case "copy":
+      case "cp":
         const copyStatus = fileCopy(
-          path.resolve(currentPath, input[1]),
+          path.resolve(pathManager.currentPath, input[1]),
           input[2],
           input[1]
         );
         console.log(copyStatus);
+        break;
+      case "mkdir":
+        console.log(createFolder(pathManager.currentPath, input[1]));
+        break;
+      case "rm":
+        console.log(fileRemove(pathManager.currentPath, input[1]));
+        break;
+      case "rmdir":
+        console.log(folderRemove(pathManager.currentPath, input[1]));
         break;
       case "exit":
         rl.close();
