@@ -1,6 +1,5 @@
 import fs from "fs";
-import PathManager from "./pathManager";
-const pathManager = new PathManager();
+
 /**
  * Read the contents of a file.
  * @param filePath - The path to the file.
@@ -18,7 +17,11 @@ export function fileReader(filePath: string): string {
   }
 }
 export function fileList(path: string) {
-  return fs.readdirSync(path, { encoding: "utf-8", withFileTypes: true });
+  try {
+    return fs.readdirSync(path, { encoding: "utf-8", withFileTypes: true });
+  } catch (ex: any) {
+    return new Error(ex).message;
+  }
 }
 export function fileMove(oldPath: string, newPath: string) {
   try {
@@ -39,10 +42,7 @@ export function fileMove(oldPath: string, newPath: string) {
 export function fileCopy(oldPath: string, newPath: string, filename: string) {
   let status = "File copied!";
   try {
-    fs.copyFileSync(
-      oldPath,
-      pathManager.changeTempDir(newPath) + "\\" + filename
-    ); // Copy the file to the new path
+    fs.copyFileSync(oldPath + "\\" + filename, newPath + "\\" + filename); // Copy the file to the new path
   } catch (ex: any) {
     status = new Error(ex).message; // If an error occurs, set the status to the error message
   }

@@ -62,7 +62,7 @@ const terminal = () => {
         break;
       case "cp":
         const copyStatus = fileCopy(
-          path.resolve(pathManager.currentPath, input[1]),
+          pathManager.changeTempDir(pathManager.currentPath),
           input[2],
           input[1]
         );

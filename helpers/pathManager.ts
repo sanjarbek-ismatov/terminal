@@ -1,6 +1,12 @@
 import path from "path";
+/**
+ * @class Path manager
+ */
 class PathManager {
   public currentPath: string;
+  /**
+   * @constructor
+   */
   constructor() {
     this.currentPath = __dirname;
   }
